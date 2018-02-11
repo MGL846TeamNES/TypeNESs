@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { MIRRORING_TYPE } from "./ROM";
-import { IRQType } from "./CPU";
-import { Machine } from "./Machine";
+import { MIRRORING_TYPE } from './ROM';
+import { IRQType } from './CPU';
+import { Machine } from './Machine';
 
 enum PPU_STATUS {
     STATUS_SPRITE0HIT = 6,
@@ -471,7 +471,7 @@ export class PPU {
             this.CoarseXScroll = value & 0x1f;
 
             if (!this.PPUSTATUS_VBlank && this.CoarseXScroll > 0 && ((value & 31) == 0)) {
-                console.log("wrong address");
+                console.log('wrong address');
             }
         }
         this.PPUSTATUS_PPUAddrLatch = !this.PPUSTATUS_PPUAddrLatch;

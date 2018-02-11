@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { MIRRORING_TYPE } from "./ROM";
-import { IRQType } from "./CPU";
-import { Machine } from "./Machine";
+import { MIRRORING_TYPE } from './ROM';
+import { IRQType } from './CPU';
+import { Machine } from './Machine';
 
 export interface IMapper {
     reset(): void;
@@ -336,7 +336,7 @@ export class Mapper0 implements IMapper {
 
     public loadROM() {
         if (!this.machine.rom.valid || this.machine.rom.romCount < 1) {
-            alert("NoMapper: Invalid ROM! Unable to load.");
+            alert('NoMapper: Invalid ROM! Unable to load.');
             return;
         }
 
@@ -729,7 +729,7 @@ export class Mapper1 extends Mapper0 {
 
     public loadROM() {
         if (!this.machine.rom.valid || this.machine.rom.romCount < 1) {
-            alert("NoMapper: Invalid ROM! Unable to load.");
+            alert('NoMapper: Invalid ROM! Unable to load.');
             return;
         }
 
@@ -757,7 +757,7 @@ export class Mapper2 extends Mapper0 {
 
     public loadROM() {
         if (!this.machine.rom.valid || this.machine.rom.romCount < 1) {
-            alert("NoMapper: Invalid ROM! Unable to load.");
+            alert('NoMapper: Invalid ROM! Unable to load.');
             return;
         }
 
@@ -988,7 +988,7 @@ export class Mapper4 extends Mapper0 {
 
     public loadROM(): void {
         if (!this.machine.rom.valid) {
-            alert("MMC3: Invalid ROM! Unable to load.");
+            alert('MMC3: Invalid ROM! Unable to load.');
             return;
         }
 

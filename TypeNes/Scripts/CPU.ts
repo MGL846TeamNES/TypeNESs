@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-import { Machine } from "./Machine";
+import { Machine } from './Machine';
 
 export enum IRQType { IRQ_NORMAL = 0, IRQ_NMI = 1, IRQ_RESET = 2 }
 
@@ -413,7 +413,7 @@ export class CPU {
             case INSTRUCTIONS.JMP:
                 // this.REG_PC = this.read16(operandAddr);
                 // if (this.counter == 0x19d32) {
-                //     alert("hit!");
+                //     alert('hit!');
                 // }
                 this.REG_PC = operandAddr;
                 oplenth = 0;
@@ -427,7 +427,7 @@ export class CPU {
                 break;
             case INSTRUCTIONS.LDA:
                 // if (this.counter == 0x8e71)
-                //     alert("LDA hit!");
+                //     alert('LDA hit!');
                 this.REG_A = this.read8(operandAddr);
                 this.FLAG_N = (this.REG_A >> 7) & 1;
                 this.FLAG_Z = this.REG_A == 0 ? 1 : 0;
@@ -568,7 +568,7 @@ export class CPU {
                 this.REG_A = this.REG_Y;
                 break;
             default:
-                alert("error! instruction not existed!");
+                alert('error! instruction not existed!');
                 if (this.machine.debugger.hasPrinted == false) {
                     this.machine.debugger.outputHistoryStatus();
                 }

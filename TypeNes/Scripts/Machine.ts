@@ -19,14 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-import { IMapper } from "./Mappers";
-import { PPU } from "./PPU";
-import { PAPU } from "./APU";
-import { Keyboard } from "./Keyboard";
-import { ROM } from "./ROM";
-import { UI } from "./UI";
-import { Debugger } from "./Debugger";
-import { CPU } from "./CPU";
+import { IMapper } from './Mappers';
+import { PPU } from './PPU';
+import { PAPU } from './APU';
+import { Keyboard } from './Keyboard';
+import { ROM } from './ROM';
+import { UI } from './UI';
+import { Debugger } from './Debugger';
+import { CPU } from './CPU';
 
 export class Machine {
     public mmap: IMapper;
@@ -66,12 +66,12 @@ export class Machine {
 
     constructor() {
         const ua = window.navigator.userAgent.toLowerCase();
-        const msie = ua.indexOf("msie ");
+        const msie = ua.indexOf('msie ');
         if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
             this.opt_isIE = true;
 
-        if (ua.indexOf("safari") != -1) {
-            if (ua.indexOf("chrome") > -1) {
+        if (ua.indexOf('safari') != -1) {
+            if (ua.indexOf('chrome') > -1) {
                 this.opt_isSafari = false; // Chrome
             } else {
                 this.opt_isSafari = true; // Safari
@@ -94,7 +94,7 @@ export class Machine {
         this.debugger = new Debugger(this);
         this.drawScreen = true;
 
-        this.ui.updateStatus("Ready to load a ROM.");
+        this.ui.updateStatus('Ready to load a ROM.');
     }
 
     // Resets the system
@@ -127,7 +127,7 @@ export class Machine {
             }
         }
         else {
-            this.ui.updateStatus("There is no ROM loaded, or it is invalid.");
+            this.ui.updateStatus('There is no ROM loaded, or it is invalid.');
         }
     }
 
@@ -191,11 +191,11 @@ export class Machine {
 
     private printFps() {
         const now = +new Date();
-        let s = "Running";
+        let s = 'Running';
         if (this.lastFpsTime) {
-            s += ": " + (
+            s += ': ' + (
                 this.fpsFrameCount / ((now - this.lastFpsTime) / 1000)
-                ).toFixed(2) + " FPS";
+                ).toFixed(2) + ' FPS';
         }
         this.ui.updateStatus(s);
         this.fpsFrameCount = 0;
@@ -221,7 +221,7 @@ export class Machine {
             this.stop();
         }
 
-        this.ui.updateStatus("Loading ROM...");
+        this.ui.updateStatus('Loading ROM...');
 
         // Load ROM file:
         this.rom = new ROM(this);
@@ -237,10 +237,10 @@ export class Machine {
             this.ppu.setMirroringType(this.rom.getMirroringType());
             this.romData = data;
 
-            this.ui.updateStatus("Successfully loaded. Ready to be started.");
+            this.ui.updateStatus('Successfully loaded. Ready to be started.');
         }
         else {
-            this.ui.updateStatus("Invalid ROM!");
+            this.ui.updateStatus('Invalid ROM!');
         }
         return this.rom.valid;
     }

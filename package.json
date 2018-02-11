@@ -11,10 +11,8 @@
     "webpack": "cd TypeNes && webpack",
     "serve": "lite-server --baseDir=TypeNes"
   },
-  "dependencies": {
-    "typescript": "^2.7.1"
-  },
   "devDependencies": {
+    "typescript": "^2.7.1",
     "@types/jest": "^19.2.4",
     "@types/node": "^9.4.0",
     "jest": "^22.1.4",
@@ -23,6 +21,8 @@
     "ts-jest": "^21.2.4",
     "ts-node": "^4.0.2",
     "tslint": "^5.8.0",
+    "web-audio-mock": "^0.1.9",
+    "canvas-prebuilt": "^1.6.5-prerelease.1",
     "webpack": "^3.10.0"
   }
 }

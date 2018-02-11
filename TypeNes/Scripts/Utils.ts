@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadDefaultROM = (machine) => {
+import { Machine } from './Machine';
+
+export const loadDefaultROM = (machine: Machine): void => {
     const oReq = new XMLHttpRequest();
     oReq.open('GET', './ROM/Alter_Ego.nes.txt', true);
     oReq.responseType = 'arraybuffer';
@@ -19,4 +19,4 @@ exports.loadDefaultROM = (machine) => {
     };
     oReq.send(undefined);
 };
-//# sourceMappingURL=Utils.js.map
+

@@ -18,8 +18,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Tile } from "./PPU";
-import { Machine } from "./Machine";
+import { Tile } from './PPU';
+import { Machine } from './Machine';
 
 class CPUStatus {
     private no_prev: number;
@@ -96,30 +96,30 @@ class CPUStatus {
 
     private buildString(prop: string, oldVal: number, newVal: number) {
         if (oldVal == newVal) {
-            return " " + prop + ":" + oldVal.toString(16);
+            return ' ' + prop + ':' + oldVal.toString(16);
         }
-        return " " + prop + ":" + oldVal.toString(16) + '=><span class="highlight">' + newVal.toString(16) + "</span>";
+        return ' ' + prop + ':' + oldVal.toString(16) + '=><span class="highlight">' + newVal.toString(16) + '</span>';
     }
 
     public printStatus() {
-        let res = "";
-        res += this.buildString("no", this.no_prev, this.no_prev);
-        res += this.buildString("addr", this.addr_prev, this.addr);
-        res += this.buildString("code", this.code_prev, this.code);
-        res += this.buildString("A", this.A_prev, this.A);
-        res += this.buildString("X", this.X_prev, this.X);
-        res += this.buildString("Y", this.Y_prev, this.Y);
-        // res += this.buildString("S", this.S_prev, this.S);
-        // res += this.buildString("P", this.P_prev, this.P);
-        res += this.buildString("N", this.N_prev, this.N);
-        res += this.buildString("V", this.V_prev, this.V);
-        res += this.buildString("B", this.B_prev, this.B);
-        res += this.buildString("D", this.D_prev, this.D);
-        res += this.buildString("I", this.I_prev, this.I);
-        // res += this.buildString("Z", this.Z_prev, this.Z);
-        res += this.buildString("C", this.C_prev, this.C);
-        res += this.buildString("cycles", this.cycles, this.cycles);
-        return res + "<br/>";
+        let res = '';
+        res += this.buildString('no', this.no_prev, this.no_prev);
+        res += this.buildString('addr', this.addr_prev, this.addr);
+        res += this.buildString('code', this.code_prev, this.code);
+        res += this.buildString('A', this.A_prev, this.A);
+        res += this.buildString('X', this.X_prev, this.X);
+        res += this.buildString('Y', this.Y_prev, this.Y);
+        // res += this.buildString('S', this.S_prev, this.S);
+        // res += this.buildString('P', this.P_prev, this.P);
+        res += this.buildString('N', this.N_prev, this.N);
+        res += this.buildString('V', this.V_prev, this.V);
+        res += this.buildString('B', this.B_prev, this.B);
+        res += this.buildString('D', this.D_prev, this.D);
+        res += this.buildString('I', this.I_prev, this.I);
+        // res += this.buildString('Z', this.Z_prev, this.Z);
+        res += this.buildString('C', this.C_prev, this.C);
+        res += this.buildString('cycles', this.cycles, this.cycles);
+        return res + '<br/>';
     }
 
 }
@@ -137,7 +137,7 @@ export class Debugger {
 
     constructor(nesMachine: Machine) {
         this.machine = nesMachine;
-        this.debugWnd = <HTMLDivElement>document.getElementById("debugWnd");
+        this.debugWnd = <HTMLDivElement>document.getElementById('debugWnd');
         this.historyStatus = new Array();
 
         this.apuDbgInfo = new Array();
@@ -160,8 +160,8 @@ export class Debugger {
     }
 
     public outputHistoryStatus() {
-        this.debugWnd.innerHTML = "";
-        let result: string = "";
+        this.debugWnd.innerHTML = '';
+        let result: string = '';
         for (const status of this.historyStatus) {
             result += status.printStatus();
         }
@@ -177,21 +177,21 @@ export class Debugger {
     public printDebuggingMsg(no: number, addr: number, code: number, A: number, X: number, Y: number, S: number, P: number,
         N: number, V: number, B: number, D: number, I: number, Z: number, C: number, cycles: number
     ) {
-        // var debugWnd = <HTMLTextAreaElement>document.getElementById("debugWnd");
-        this.debugWnd.innerHTML += no + " : " + addr + " :  " + code;
-        this.debugWnd.innerHTML += " A:" + "<b>" + A + "</b>";
-        this.debugWnd.innerHTML += " X:" + X;
-        this.debugWnd.innerHTML += " Y:" + Y;
-        this.debugWnd.innerHTML += " S:" + S;
-        this.debugWnd.innerHTML += " P:" + P;
-        this.debugWnd.innerHTML += " N:" + N;
-        this.debugWnd.innerHTML += " V:" + V;
-        this.debugWnd.innerHTML += " B:" + B;
-        this.debugWnd.innerHTML += " D:" + D;
-        this.debugWnd.innerHTML += " I:" + I;
-        this.debugWnd.innerHTML += " Z:" + Z;
-        this.debugWnd.innerHTML += " C:" + C;
-        this.debugWnd.innerHTML += "\n";
+        // var debugWnd = <HTMLTextAreaElement>document.getElementById('debugWnd');
+        this.debugWnd.innerHTML += no + ' : ' + addr + ' :  ' + code;
+        this.debugWnd.innerHTML += ' A:' + '<b>' + A + '</b>';
+        this.debugWnd.innerHTML += ' X:' + X;
+        this.debugWnd.innerHTML += ' Y:' + Y;
+        this.debugWnd.innerHTML += ' S:' + S;
+        this.debugWnd.innerHTML += ' P:' + P;
+        this.debugWnd.innerHTML += ' N:' + N;
+        this.debugWnd.innerHTML += ' V:' + V;
+        this.debugWnd.innerHTML += ' B:' + B;
+        this.debugWnd.innerHTML += ' D:' + D;
+        this.debugWnd.innerHTML += ' I:' + I;
+        this.debugWnd.innerHTML += ' Z:' + Z;
+        this.debugWnd.innerHTML += ' C:' + C;
+        this.debugWnd.innerHTML += '\n';
     }
     // private Draw8x8(canvasContext, gridX: number, gridY: number, patternBytes: number[], attrib: number) {
     //     var canvasData = canvasContext.getImageData(0, 0, 256, 256);
@@ -216,13 +216,13 @@ export class Debugger {
     // public DrawNametable(canvasID: string, patterntableStartAddr: number, nametableStartAddr: number) {
     //     var screen = <HTMLCanvasElement>document.getElementById(canvasID);
 
-    //     var canvasContext = screen.getContext("2d");
+    //     var canvasContext = screen.getContext('2d');
 
-    //     //canvasContext.fillStyle = "black";
+    //     //canvasContext.fillStyle = 'black';
     //     var r = this.machine.ppu.imgPalette[0] & 0xff;
     //     var g = (this.machine.ppu.imgPalette[0] >> 8) & 0xff;
     //     var b = (this.machine.ppu.imgPalette[0] >> 16) & 0xff;
-    //     canvasContext.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+    //     canvasContext.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
     //     // set alpha to opaque
     //     canvasContext.fillRect(0, 0, 256, 240);
 
@@ -235,7 +235,7 @@ export class Debugger {
 
     //     for (var i = 0; i < 960; i++) {
     //         var tableValue = this.machine.ppu.vramMem[nametableStartAddr + i];
-    //         //console.log(i.toString() + ":" + tableValue.toString());
+    //         //console.log(i.toString() + ':' + tableValue.toString());
     //         var tileStartAddr = patterntableStartAddr + tableValue * 16;
     //         var chars = [];
     //         for (var j = 0; j < 16; j++) {
@@ -253,8 +253,8 @@ export class Debugger {
     public DrawPalette(canvasID: string) {
         const screen = <HTMLCanvasElement>document.getElementById(canvasID);
 
-        const canvasContext = screen.getContext("2d");
-        canvasContext.fillStyle = "white";
+        const canvasContext = screen.getContext('2d');
+        canvasContext.fillStyle = 'white';
         canvasContext.fillRect(0, 0, 256, 240);
 
         for (let i = 0; i < 16; i++) {
@@ -266,9 +266,9 @@ export class Debugger {
             //     g = (this.machine.ppu.palettes[0].RGBColors[i] >> 8) & 0xff;
             //     b = (this.machine.ppu.imgPalette[0] >> 16) & 0xff;
             // }
-            canvasContext.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+            canvasContext.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
             canvasContext.fillRect(i * 16, 0, 16, 16);
-            // console.log("image palette " + i.toString() + ":" + this.machine.ppu.imgPalette[i] + " PPU Mem:" + this.machine.ppu.vramMem[0x3f00 + i].toString(16));
+            // console.log('image palette ' + i.toString() + ':' + this.machine.ppu.imgPalette[i] + ' PPU Mem:' + this.machine.ppu.vramMem[0x3f00 + i].toString(16));
         }
 
         for (let i = 0; i < 16; i++) {
@@ -280,9 +280,9 @@ export class Debugger {
             //     g = (this.machine.ppu.imgPalette[0] >> 8) & 0xff;
             //     b = (this.machine.ppu.imgPalette[0] >> 16) & 0xff;
             // }
-            canvasContext.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+            canvasContext.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
             canvasContext.fillRect(i * 16, 16, 16, 16);
-            // console.log("sprite palette " + i.toString() + ":" + this.machine.ppu.sprPalette[i] + " PPU Mem:" + this.machine.ppu.vramMem[0x3f10 + i].toString(16));
+            // console.log('sprite palette ' + i.toString() + ':' + this.machine.ppu.sprPalette[i] + ' PPU Mem:' + this.machine.ppu.vramMem[0x3f10 + i].toString(16));
         }
     }
 
@@ -337,12 +337,12 @@ export class Debugger {
 
         const screen = <HTMLCanvasElement>document.getElementById(canvasID);
 
-        const canvasContext = screen.getContext("2d");
+        const canvasContext = screen.getContext('2d');
 
         const r = this.machine.ppu.palettes[0].RGBColors[0] & 0xff;
         const g = (this.machine.ppu.palettes[0].RGBColors[0] >> 8) & 0xff;
         const b = (this.machine.ppu.palettes[0].RGBColors[0] >> 16) & 0xff;
-        canvasContext.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        canvasContext.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
         // set alpha to opaque
         canvasContext.fillRect(0, 0, 256, 240);
 
@@ -365,24 +365,24 @@ export class Debugger {
     }
 
     public recordAPUDebuggingMsg(no: number, square1: number, square2: number, triangle: number, noise: number) {
-        // var debugWnd = <HTMLTextAreaElement>document.getElementById("debugWnd");
-        // this.debugWnd.innerHTML += no + "  " + "square1:" + square1 + " ";
-        // this.debugWnd.innerHTML += "square2:" + square2 + " ";
-        // this.debugWnd.innerHTML += "triangle:" + triangle + " ";
-        // this.debugWnd.innerHTML += "noise:" + noise + " ";
-        // this.debugWnd.innerHTML += "<br/>";
+        // var debugWnd = <HTMLTextAreaElement>document.getElementById('debugWnd');
+        // this.debugWnd.innerHTML += no + '  ' + 'square1:' + square1 + ' ';
+        // this.debugWnd.innerHTML += 'square2:' + square2 + ' ';
+        // this.debugWnd.innerHTML += 'triangle:' + triangle + ' ';
+        // this.debugWnd.innerHTML += 'noise:' + noise + ' ';
+        // this.debugWnd.innerHTML += '<br/>';
 
         this.apuDbgInfo.push([no, square1, square2, triangle, noise]);
     }
 
     public printAPUDBGInfo() {
-        let str = "";
+        let str = '';
         for (let i = 0; i < this.apuDbgInfo.length; i++) {
-            str += this.apuDbgInfo[i][0] + " " + "square1:" + this.apuDbgInfo[i][1] + " ";
-            str += "square2:" + this.apuDbgInfo[i][2] + " ";
-            str += "triangle:" + this.apuDbgInfo[i][3] + " ";
-            str += "noise:" + this.apuDbgInfo[i][4] + " ";
-            str += "<br/>";
+            str += this.apuDbgInfo[i][0] + ' ' + 'square1:' + this.apuDbgInfo[i][1] + ' ';
+            str += 'square2:' + this.apuDbgInfo[i][2] + ' ';
+            str += 'triangle:' + this.apuDbgInfo[i][3] + ' ';
+            str += 'noise:' + this.apuDbgInfo[i][4] + ' ';
+            str += '<br/>';
         }
         this.debugWnd.innerHTML = str;
         this.drawSoundWave();
@@ -390,13 +390,13 @@ export class Debugger {
 
     public drawSoundWave() {
         // var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        const screen = <HTMLCanvasElement>document.getElementById("saveScreen");
-        const canvasContext = screen.getContext("2d");
-        canvasContext.fillStyle = "black";
+        const screen = <HTMLCanvasElement>document.getElementById('saveScreen');
+        const canvasContext = screen.getContext('2d');
+        canvasContext.fillStyle = 'black';
         for (let i = 0; i < 1024; i++) {
             canvasContext.fillRect(i, 239 - <number>this.apuDbgInfo[i][4], 1, 1);
             // if (this.apuDbgInfo[i][1] != 144.384 && this.apuDbgInfo[i][1] != 0) {
-            //     alert("strange value");
+            //     alert('strange value');
             // }
         }
     }

@@ -103,7 +103,7 @@ var NES;
                     break;
                 default:
                     {
-                        alert("illegal regNum writing to Squarechannel " + regNum);
+                        alert('illegal regNum writing to Squarechannel ' + regNum);
                     }
             }
         };
@@ -187,7 +187,7 @@ var NES;
                     this.isLengthCounterHalt = (val & 0x20) == 0;
                     this.isConstantVolume = (val & 0x10) != 0;
                     //if (!this.isConstantVolume) {
-                    //    alert("not constant volume");
+                    //    alert('not constant volume');
                     //}
                     this.volume = val & 0xf;
                     break;
@@ -377,7 +377,7 @@ var NES;
                     return (this.frameCounterMode << 7) | (this.frameCounterIRQInibit << 6);
                     break;
                 default:
-                    alert("invalid reading in papu:" + addr);
+                    alert('invalid reading in papu:' + addr);
                     break;
             }
         };
@@ -442,7 +442,7 @@ var NES;
                     this.frameCounterTickSequenceLength = this.frameCounterMode == 1 ? 5 : 4;
                     break;
                 default:
-                    alert("invalid writing in papu:" + addr);
+                    alert('invalid writing in papu:' + addr);
                     break;
             }
         };
