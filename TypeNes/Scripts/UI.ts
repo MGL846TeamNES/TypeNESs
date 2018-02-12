@@ -18,21 +18,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Machine } from "./Machine";
+import { Machine } from './Machine';
+import { loadDefaultROM } from './Utils';
 
 export class UI {
     private machine: Machine;
-    private screen: HTMLCanvasElement;
-    private canvasContext: CanvasRenderingContext2D;
+    public screen: HTMLCanvasElement;
+    public canvasContext: CanvasRenderingContext2D;
     private status: HTMLLabelElement;
-    private canvasImageData: ImageData;
+    public canvasImageData: ImageData;
     constructor(nesMachine: Machine) {
         this.machine = nesMachine;
-        this.screen = <HTMLCanvasElement>document.getElementById("nes-screen");
-        this.status = <HTMLLabelElement>document.getElementById("nes-status");
-        this.canvasContext = this.screen.getContext("2d");
+        this.screen = <HTMLCanvasElement>document.getElementById('nes-screen');
+        this.status = <HTMLLabelElement>document.getElementById('nes-status');
+        this.canvasContext = this.screen.getContext('2d');
         if (!this.canvasContext.getImageData) {
-            console.error("cannot execute getImageData()");
+            console.error('cannot execute getImageData()');
             return;
         }
 
@@ -43,29 +44,11 @@ export class UI {
     }
 
     public loadROM(): void {
-        const oReq = new XMLHttpRequest();
-        oReq.open("GET", "./ROM/Alter_Ego.nes.txt", true);
-        oReq.responseType = "arraybuffer";
-        const self = this;
-        oReq.onload = function (oEvent) {
-            const arrayBuffer = oReq.response; // Note: not oReq.responseText
-            if (arrayBuffer) {
-                const byteArray = new Uint8Array(arrayBuffer);
-                const dataArr = new Array();
-                for (let i = 0; i < byteArray.byteLength; i++) {
-                    // do something with each byte in the array
-                    dataArr[i] = byteArray[i];
-                }
-                self.machine.loadRom(dataArr);
-                self.machine.start();
-            }
-        };
-
-        oReq.send(undefined);
+        loadDefaultROM(this.machine);
     }
 
     public resetCanvas(): void {
-        this.canvasContext.fillStyle = "black";
+        this.canvasContext.fillStyle = 'black';
         // set alpha to opaque
         this.canvasContext.fillRect(0, 0, 256, 240);
 

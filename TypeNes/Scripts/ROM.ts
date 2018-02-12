@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IMapper, Mapper0, Mapper1, Mapper2, Mapper4 } from "./Mappers";
-import { Tile } from "./PPU";
-import { Machine } from "./Machine";
+import { IMapper, Mapper0, Mapper1, Mapper2, Mapper4 } from './Mappers';
+import { Tile } from './PPU';
+import { Machine } from './Machine';
 
 export enum MIRRORING_TYPE {
     VERTICAL_MIRRORING = 0,
@@ -171,7 +171,7 @@ export class ROM {
         if (this.mapperType >= 0 && this.mapperType < this.mapperName.length) {
             return this.mapperName[this.mapperType];
         }
-        return "Unknown Mapper, " + this.mapperType;
+        return 'Unknown Mapper, ' + this.mapperType;
     }
 
     public createMapper(): IMapper {

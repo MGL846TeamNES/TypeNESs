@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // http://wiki.nesdev.com/w/index.php/APU
 
-import { Machine } from "./Machine";
+import { Machine } from './Machine';
 
 declare var webkitAudioContext: any;
 
@@ -151,7 +151,7 @@ class SquareChannel {
 
                     this.sweepTimer = 0;
                     // if (this.sweepUnitEnabled) {
-                    //     alert("sweep unit enabled!");
+                    //     alert('sweep unit enabled!');
                     // }
                 }
                 break;
@@ -172,7 +172,7 @@ class SquareChannel {
                 break;
             default:
                 {
-                    alert("illegal regNum writing to Squarechannel " + regNum);
+                    alert('illegal regNum writing to Squarechannel ' + regNum);
                 }
         }
     }
@@ -307,7 +307,7 @@ class NoiseChannel {
                 this.isLengthCounterHalt = (val & 0x20) == 0;
                 this.isConstantVolume = (val & 0x10) != 0;
                 // if (!this.isConstantVolume) {
-                //     alert("not constant volume");
+                //     alert('not constant volume');
                 // }
 
                 this.volume = val & 0xf;
@@ -554,7 +554,7 @@ export class PAPU {
             case 0x4017:
                 return (this.frameCounterMode << 7) | (this.frameCounterIRQInibit << 6);
             default:
-                alert("invalid reading in papu:" + addr);
+                alert('invalid reading in papu:' + addr);
                 break;
         }
     }
@@ -621,7 +621,7 @@ export class PAPU {
 
                 break;
             default:
-                alert("invalid writing in papu:" + addr);
+                alert('invalid writing in papu:' + addr);
                 break;
         }
     }
