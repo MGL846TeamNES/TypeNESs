@@ -5,7 +5,38 @@ import * as fs from 'fs';
 import { Machine } from '../Scripts/Machine';
 import * as Utils from '../Scripts/Utils';
 
-it('should load the Machine and start running the ROM', (done) => {
+it('should load a test ROM and validate the result', () => {
+    jest.spyOn(Utils, 'loadDefaultROM').mockImplementation((machine: Machine) => {
+        const nb = fs.readFileSync('TypeNes/ROM/mario.nes');
+        const arrayBuffer = nb.buffer;
+        const byteArray = new Uint8Array(arrayBuffer);
+        const dataArr = new Array();
+        for (let i = 0; i < byteArray.byteLength; i++) {
+            dataArr[i] = byteArray[i];
+        }
+        machine.loadRom(dataArr);
+    });
+
+    document.body.innerHTML =
+        '<div>' +
+        '  <canvas width="256" height="240" id="nes-screen" ></canvas>' +
+        '  <div id="nes-status">status</div>' +
+        '</div>';
+
+    const m = new Machine();
+    m.ui.loadROM();
+    for (let i = 0; i < 1000000; i++) {
+        m.cpu.step();
+    }
+    const image = m.ui.canvasContext.canvas.toDataURL();
+    const data = image.replace(/^data:image\/\w+;base64,/, '');
+    if (!fs.existsSync('TypeNes/dist')) {
+        fs.mkdirSync('TypeNes/dist');
+    }
+    fs.writeFileSync('TypeNes/dist/screenshot2.png', data,  {encoding: 'base64'});
+});
+
+it('should load the Machine and start running the ROM', async (done) => {
 
     // Create a mock implementation for loadDefaultROM. The normal implementation will grab the ROM from
     // the web but there are no server running during the tests.
@@ -34,6 +65,9 @@ it('should load the Machine and start running the ROM', (done) => {
     // Create a Machine object and load the default ROM from the mock from above.
     const m = new Machine();
     m.ui.loadROM();
+    await setTimeout(() => {
+        m.keyboard.touchBtnDown(3);
+    }, 1300);
 
     // This will make jest wait 2 seconds then execute the callback.
     // The callback will save the canvas content to disk.
@@ -45,5 +79,5 @@ it('should load the Machine and start running the ROM', (done) => {
         }
         fs.writeFileSync('TypeNes/dist/screenshot.png', data,  {encoding: 'base64'});
         done();
-    }, 2000);
+    }, 4600);
 });

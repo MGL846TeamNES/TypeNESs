@@ -1,0 +1,3 @@
+[submodule "TypeNes/__tests__/nes-test-roms"]
+	path = TypeNes/__tests__/nes-test-roms
+	url = https://github.com/MGL846TeamNES/nes-test-roms.git
