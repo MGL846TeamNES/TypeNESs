@@ -37,6 +37,7 @@ it('should load a test ROM and validate the result', () => {
 });
 
 it('should load the Machine and start running the ROM', async (done) => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
     // Create a mock implementation for loadDefaultROM. The normal implementation will grab the ROM from
     // the web but there are no server running during the tests.
@@ -68,6 +69,9 @@ it('should load the Machine and start running the ROM', async (done) => {
     await setTimeout(() => {
         m.keyboard.touchBtnDown(3);
     }, 1300);
+    await setTimeout(() => {
+        m.keyboard.touchBtnDown(7);
+    }, 4000);
 
     // This will make jest wait 2 seconds then execute the callback.
     // The callback will save the canvas content to disk.
@@ -79,5 +83,5 @@ it('should load the Machine and start running the ROM', async (done) => {
         }
         fs.writeFileSync('TypeNes/dist/screenshot.png', data,  {encoding: 'base64'});
         done();
-    }, 4600);
+    }, 8600);
 });
