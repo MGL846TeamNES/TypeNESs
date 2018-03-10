@@ -24,5 +24,8 @@
     "web-audio-mock": "^0.1.9",
     "canvas-prebuilt": "^1.6.5-prerelease.1",
     "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "npm": "^5.7.1"
   }
 }

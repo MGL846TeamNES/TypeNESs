@@ -7,6 +7,9 @@ System Support
 
 Install Node.js: https://nodejs.org/en/
 
+Clone the submodules:
+`git submodule init`
+`git submodule update`
 Install the dependencies for the project:
 `npm install`
 
