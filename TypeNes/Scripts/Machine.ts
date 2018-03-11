@@ -132,6 +132,18 @@ export class Machine {
     }
 
     private frame(draw: boolean) {
+        const self = this;
+        this.executeFrameCycle(draw);
+        const current = +new Date();
+        const dt = current - this.frameBeginTime;
+        if (dt >= 1000 / this.opt_preferredFrameRate) {
+            setTimeout(function () { self.frame(false); });
+        } else {
+            setTimeout(function () { self.frame(true); }, 1000 / this.opt_preferredFrameRate - dt);
+        }
+    }
+
+    public executeFrameCycle(draw: boolean) {
         this.drawScreen = draw;
         const self = this;
 
@@ -179,14 +191,6 @@ export class Machine {
 
         this.fpsFrameCount++;
         this.lastFrameTime = +new Date();
-
-        const current = +new Date();
-        const dt = current - this.frameBeginTime;
-        if (dt >= 1000 / this.opt_preferredFrameRate) {
-            setTimeout(function () { self.frame(false); });
-        } else {
-            setTimeout(function () { self.frame(true); }, 1000 / this.opt_preferredFrameRate - dt);
-        }
     }
 
     private printFps() {
