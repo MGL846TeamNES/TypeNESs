@@ -4,17 +4,15 @@ import * as fs from 'fs';
 
 import { Machine } from '../Scripts/Machine';
 import * as Utils from '../Scripts/Utils';
+import {
+    cycleFrameGen,
+    takeScreenShotGen,
+    loadMarioROM,
+} from '../Scripts/helpers/helper';
 
 it('should load a test ROM and validate the result', () => {
     jest.spyOn(Utils, 'loadDefaultROM').mockImplementation((machine: Machine) => {
-        const nb = fs.readFileSync('TypeNes/ROM/mario.nes');
-        const arrayBuffer = nb.buffer;
-        const byteArray = new Uint8Array(arrayBuffer);
-        const dataArr = new Array();
-        for (let i = 0; i < byteArray.byteLength; i++) {
-            dataArr[i] = byteArray[i];
-        }
-        machine.loadRom(dataArr);
+        loadMarioROM(m);
     });
     document.body.innerHTML =
         '<div>' +
@@ -23,70 +21,21 @@ it('should load a test ROM and validate the result', () => {
         '</div>';
 
     const m = new Machine();
+    const cycleFrame = cycleFrameGen(m);
+    const takeScreenShot = takeScreenShotGen(m);
+
     m.ui.loadROM();
     m.drawScreen = true;
-    for (let i = 0; i < 40; i++) {
-        m.executeFrameCycle(true);
-    }
+    cycleFrame(40);
     m.keyboard.touchBtnDown(3);
-    for (let i = 0; i < 176; i++) {
-        m.executeFrameCycle(true);
-    }
-    const image = m.ui.canvasContext.canvas.toDataURL();
-    const data = image.replace(/^data:image\/\w+;base64,/, '');
-    if (!fs.existsSync('TypeNes/dist')) {
-        fs.mkdirSync('TypeNes/dist');
-    }
-    fs.writeFileSync('TypeNes/dist/screenshot2.png', data,  {encoding: 'base64'});
-});
+    cycleFrame(176);
+    m.keyboard.touchBtnDown(6);
+    cycleFrame(3);
+    m.keyboard.touchBtnUp(6);
+    cycleFrame(10);
+    m.keyboard.touchBtnDown(0);
+    cycleFrame(30);
+    m.keyboard.touchBtnUp(0);
 
-it('should load the Machine and start running the ROM', async (done) => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
-    // Create a mock implementation for loadDefaultROM. The normal implementation will grab the ROM from
-    // the web but there are no server running during the tests.
-    // This mock will read it from the mario bros ROM from disk instead.
-    jest.spyOn(Utils, 'loadDefaultROM').mockImplementation((machine: Machine) => {
-        fs.readFile('TypeNes/ROM/mario.nes', (err, nb) => {
-            const arrayBuffer = nb.buffer;
-            const byteArray = new Uint8Array(arrayBuffer);
-            const dataArr = new Array();
-            for (let i = 0; i < byteArray.byteLength; i++) {
-                dataArr[i] = byteArray[i];
-            }
-            machine.loadRom(dataArr);
-            machine.start();
-        });
-    });
-
-    // By specifying the content of the document body, it creates a canvas in jsdom
-    // that can be accessed by the tested code.
-    document.body.innerHTML =
-        '<div>' +
-        '  <canvas width="256" height="240" id="nes-screen" ></canvas>' +
-        '  <div id="nes-status">status</div>' +
-        '</div>';
-
-    // Create a Machine object and load the default ROM from the mock from above.
-    const m = new Machine();
-
-    m.ui.loadROM();
-    await setTimeout(() => {
-        m.keyboard.touchBtnDown(3);
-    }, 1300);
-    await setTimeout(() => {
-        m.keyboard.touchBtnDown(7);
-    }, 4000);
-
-    // This will make jest wait 2 seconds then execute the callback.
-    // The callback will save the canvas content to disk.
-    return setTimeout(() => {
-        const image = m.ui.canvasContext.canvas.toDataURL();
-        const data = image.replace(/^data:image\/\w+;base64,/, '');
-        if (!fs.existsSync('TypeNes/dist')) {
-            fs.mkdirSync('TypeNes/dist');
-        }
-        fs.writeFileSync('TypeNes/dist/screenshot.png', data,  {encoding: 'base64'});
-        done();
-    }, 8600);
+    takeScreenShot('screenshot2.png');
 });
