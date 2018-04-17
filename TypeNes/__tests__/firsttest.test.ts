@@ -27,15 +27,28 @@ it('should load a test ROM and validate the result', () => {
     m.ui.loadROM();
     m.drawScreen = true;
     cycleFrame(40);
+
+    //m.keyboard.touchBtnDown(5);
+    //cycleFrame(20);
+
+    takeScreenShot('screenshot2.png');
     m.keyboard.touchBtnDown(3);
     cycleFrame(176);
+    takeScreenShot('testROMButtonInput_start.png');
     m.keyboard.touchBtnDown(6);
     cycleFrame(3);
     m.keyboard.touchBtnUp(6);
     cycleFrame(10);
+    takeScreenShot('testROMButtonInput_left.png');
     m.keyboard.touchBtnDown(0);
     cycleFrame(30);
     m.keyboard.touchBtnUp(0);
+    takeScreenShot('testROMButtonInput_jump.png');
+    cycleFrame(30);
+    m.keyboard.touchBtnDown(7);
+    cycleFrame(3);
+    m.keyboard.touchBtnUp(7);
+    cycleFrame(10);
+    takeScreenShot('testROMButtonInput_right.png');
 
-    takeScreenShot('screenshot2.png');
 });

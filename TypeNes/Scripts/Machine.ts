@@ -52,6 +52,7 @@ export class Machine {
 
     private isRunning: boolean;
     private fpsFrameCount: number;
+    public totalFrames: number = 0;
     private limitFrames: boolean;
     private romData: number[];
     private frameInterval: number;
@@ -90,7 +91,7 @@ export class Machine {
         // this.papu = new PAPU(this);
         this.papu = new PAPU(this);
         this.mmap = undefined; // set in loadRom()
-        this.keyboard = new Keyboard();
+        this.keyboard = new Keyboard(this);
         this.debugger = new Debugger(this);
         this.drawScreen = true;
 
@@ -146,7 +147,7 @@ export class Machine {
     public executeFrameCycle(draw: boolean) {
         this.drawScreen = draw;
         const self = this;
-
+        this.totalFrames++;
         this.frameBeginTime = +new Date();
 
         this.ppu.drawFullScreenBg();

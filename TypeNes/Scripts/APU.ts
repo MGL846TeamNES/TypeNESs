@@ -255,69 +255,108 @@ class TriangleChannel {
 
 }
 
-class NoiseChannel {
+export class NoiseChannel {
+
     private papu: PAPU;
-    public isEnabled: boolean;
+    private _isEnabled: boolean;
+    public get isEnabled(): boolean {
+        return this._isEnabled;
+    }
+    public set isEnabled(value: boolean) {
+        this._isEnabled = value;
+    }
+
     // public lengthCounter: number;
     private noiseWaveLengthLookup: number[] = [0x4, 0x8, 0x10, 0x20, 0x40, 0x60, 0x80, 0xa,
                                             0xca, 0xfe, 0x17c, 0x1fc, 0x2fa, 0x3f8, 0x7f2, 0xfe4];
 
-    public cycleCounter: number;
-    public currentOutput: number;
+    private _cycleCounter: number;
+    public get cycleCounter(): number {
+        return this._cycleCounter;
+    }
+    public set cycleCounter(value: number) {
+        this._cycleCounter = value;
+    }
 
+    private _currentOutput: number;
+    public get currentOutput(): number {
+        return this._currentOutput;
+    }
     constructor(papu: PAPU) {
         this.papu = papu;
-        this.isEnabled = false;
-        this.lengthCounter = 0;
-        this.cycleCounter = 0;
-        this.currentOutput = 0;
+        this._isEnabled = false;
+        this._lengthCounter = 0;
+        this._cycleCounter = 0;
+        this._currentOutput = 0;
 
-        this.isLengthCounterHalt = true;
-        this.isConstantVolume = true;
-        this.volume = 0;
-        this.isNoiseLoop = false;
-        this.noisePeriodInCycle = 0;
+        this._isLengthCounterHalt = true;
+        this._isConstantVolume = true;
+        this._volume = 0;
+        this._isNoiseLoop = false;
+        this._noisePeriodInCycle = 0;
     }
 
     // 0x400C
-    private isLengthCounterHalt: boolean;
-    private isConstantVolume: boolean;
-    private volume: number;
+    private _isLengthCounterHalt: boolean;
+    public get isLengthCounterHalt(): boolean {
+        return this._isLengthCounterHalt;
+    }
+    private _isConstantVolume: boolean;
+    public get isConstantVolume(): boolean {
+        return this._isConstantVolume;
+    }
+    private _volume: number;
+    public get volume(): number {
+        return this._volume;
+    }
     // private volume: number;
 
     // 0x400E
-    private isNoiseLoop: boolean;
-    public noisePeriodInCycle: number;
+    private _isNoiseLoop: boolean;
+    public get isNoiseLoop(): boolean {
+        return this._isNoiseLoop;
+    }
+    private _noisePeriodInCycle: number;
+    public get noisePeriodInCycle(): number {
+        return this._noisePeriodInCycle;
+    }
 
     // 0x400F
-    public lengthCounter: number;
+    private _lengthCounter: number;
+    public get lengthCounter(): number {
+        return this._lengthCounter;
+    }
+    public set lengthCounter(value: number) {
+        this._lengthCounter = value;
+    }
+
 
     public updateCurrentOutput() {
-        this.currentOutput = (Math.random() > 0.5 ? 1 : 0) * this.volume;
+        this._currentOutput = (Math.random() > 0.5 ? 1 : 0) * this._volume;
     }
 
     public lengthCounterDeduct(): void {
-        this.lengthCounter--;
-        if (this.lengthCounter == 0)
-            this.currentOutput = 0;
+        this._lengthCounter--;
+        if (this._lengthCounter == 0)
+            this._currentOutput = 0;
     }
     public writeRegister(addr: number, val: number) {
         switch (addr) {
             case 0x400c:
-                this.isLengthCounterHalt = (val & 0x20) == 0;
-                this.isConstantVolume = (val & 0x10) != 0;
+                this._isLengthCounterHalt = (val & 0x20) == 0;
+                this._isConstantVolume = (val & 0x10) != 0;
                 // if (!this.isConstantVolume) {
                 //     alert('not constant volume');
                 // }
 
-                this.volume = val & 0xf;
+                this._volume = val & 0xf;
                 break;
             case 0x400e:
-                this.isNoiseLoop = (val & 0x80) != 0;
-                this.noisePeriodInCycle = this.noiseWaveLengthLookup[val & 0xf];
+                this._isNoiseLoop = (val & 0x80) != 0;
+                this._noisePeriodInCycle = this.noiseWaveLengthLookup[val & 0xf];
                 break;
             case 0x400f:
-                this.lengthCounter = (val & 0xf8) >> 3;
+                this._lengthCounter = (val & 0xf8) >> 3;
                 break;
         }
     }

@@ -19,7 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // namespace NES {
-    enum KEYS {
+    import { Machine } from './Machine';
+
+enum KEYS {
         KEY_A = 0,
         KEY_B = 1,
         KEY_SELECT = 2,
@@ -32,7 +34,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     export class Keyboard {
         public state1: Array<number> = new Array(8);
         public state2: Array<number> = new Array(8);
-        constructor() {
+        private machine: Machine;
+
+        constructor(m: Machine) {
+            this.machine = m;
             for (let i: number = 0; i < this.state1.length; i++) {
                 this.state1[i] = 0x40;
             }
@@ -68,12 +73,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
 
         public keyDown(evt: KeyboardEvent) {
+            console.log('keydown ', this.machine.totalFrames, evt.keyCode);
+
             if (!this.setKey(evt.keyCode, 0x41) && evt.preventDefault) {
                 evt.preventDefault();
             }
         }
 
         public keyUp(evt: KeyboardEvent) {
+            console.log('keyup ', this.machine.totalFrames, evt.keyCode);
+
             if (!this.setKey(evt.keyCode, 0x40) && evt.preventDefault) {
                 evt.preventDefault();
             }
