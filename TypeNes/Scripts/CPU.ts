@@ -124,19 +124,62 @@ class Mapper {
 
 export class CPU {
     private machine: Machine;
-    private REG_A: number;
-    private REG_X: number;
-    private REG_Y: number;
-    private REG_PC: number;
-    private REG_S: number;
-    private REG_P: number;
-    private FLAG_N: number;
-    private FLAG_V: number;
-    private FLAG_B: number;
-    private FLAG_D: number;
-    private FLAG_I: number;
-    private FLAG_Z: number;
-    private FLAG_C: number;
+    private _REG_A: number;
+    public get REG_A(): number {
+        return this._REG_A;
+    }
+    public bypassChangeREG_A(value: number) {
+        this._REG_A = value;
+    }
+    private _REG_X: number;
+    public get REG_X(): number {
+        return this._REG_X;
+    }
+    private _REG_Y: number;
+    public get REG_Y(): number {
+        return this._REG_Y;
+    }
+    private _REG_PC: number;
+    public get REG_PC(): number {
+        return this._REG_PC;
+    }
+    private _REG_S: number;
+    public get REG_S(): number {
+        return this._REG_S;
+    }
+    private _REG_P: number;
+    public get REG_P(): number {
+        return this._REG_P;
+    }
+    private _FLAG_N: number;
+    public get FLAG_N(): number {
+        return this._FLAG_N;
+    }
+    private _FLAG_V: number;
+    public get FLAG_V(): number {
+        return this._FLAG_V;
+    }
+    private _FLAG_B: number;
+    public get FLAG_B(): number {
+        return this._FLAG_B;
+    }
+    private _FLAG_D: number;
+    public get FLAG_D(): number {
+        return this._FLAG_D;
+    }
+    private _FLAG_I: number;
+    public get FLAG_I(): number {
+        return this._FLAG_I;
+    }
+    private _FLAG_Z: number;
+    public get FLAG_Z(): number {
+        return this._FLAG_Z;
+    }
+    private _FLAG_C: number;
+    public get FLAG_C(): number {
+        return this._FLAG_C;
+    }
+
     public mem: number[] = new Array(0x10000);
     private INT_requested: boolean;
     private irqType: IRQType;
@@ -163,7 +206,7 @@ export class CPU {
                     break;
             }
         }
-        const inst = this.read8(this.REG_PC);
+        const inst = this.read8(this._REG_PC);
         const opdata = this.instructionsData[inst];
         const opcode = opdata & 0xff;
         const addrMode = (opdata >> 8) & 0xff;
@@ -175,68 +218,68 @@ export class CPU {
 
         switch (addrMode) {
             case ADDRESSING_MODE.ABSOLUTE:
-                operandAddr = this.read16(this.REG_PC + 1);
+                operandAddr = this.read16(this._REG_PC + 1);
                 break;
             case ADDRESSING_MODE.ABSOLUTE_INDEXED_WITH_X:
-                operandAddr = this.read16(this.REG_PC + 1);
-                extraCycle = this.crossPage(operandAddr, operandAddr + this.REG_X) ? 1 : 0;
-                operandAddr += this.REG_X;
+                operandAddr = this.read16(this._REG_PC + 1);
+                extraCycle = this.crossPage(operandAddr, operandAddr + this._REG_X) ? 1 : 0;
+                operandAddr += this._REG_X;
                 break;
             case ADDRESSING_MODE.ABSOLUTE_INDEXED_WITH_Y:
-                operandAddr = this.read16(this.REG_PC + 1);
-                extraCycle = this.crossPage(operandAddr, operandAddr + this.REG_Y) ? 1 : 0;
-                operandAddr += this.REG_Y;
+                operandAddr = this.read16(this._REG_PC + 1);
+                extraCycle = this.crossPage(operandAddr, operandAddr + this._REG_Y) ? 1 : 0;
+                operandAddr += this._REG_Y;
                 break;
             case ADDRESSING_MODE.ABSOLUTE_INDIRECT:
-                operandAddr = this.read16(this.read16(this.REG_PC + 1));
+                operandAddr = this.read16(this.read16(this._REG_PC + 1));
                 break;
             case ADDRESSING_MODE.ACCUMULATOR:
                 break;
             case ADDRESSING_MODE.IMMEDIATE:
-                operandAddr = this.REG_PC + 1;
+                operandAddr = this._REG_PC + 1;
                 break;
             case ADDRESSING_MODE.IMPLIED:
                 break;
             case ADDRESSING_MODE.RELATIVE:
-                const val = this.read8(this.REG_PC + 1);
-                operandAddr = val < 0x80 ? this.REG_PC + oplenth + val : this.REG_PC + oplenth + val - 256;
+                const val = this.read8(this._REG_PC + 1);
+                operandAddr = val < 0x80 ? this._REG_PC + oplenth + val : this._REG_PC + oplenth + val - 256;
                 break;
             case ADDRESSING_MODE.ZERO_PAGE:
-                operandAddr = this.read8(this.REG_PC + 1);
+                operandAddr = this.read8(this._REG_PC + 1);
                 break;
             case ADDRESSING_MODE.ZERO_PAGE_INDEXED_WITH_X:
-                operandAddr = this.read8(this.REG_PC + 1) + this.REG_X;
+                operandAddr = this.read8(this._REG_PC + 1) + this._REG_X;
                 break;
             case ADDRESSING_MODE.ZERO_PAGE_INDEXED_WITH_X_INDIRECT:
-                operandAddr = this.read8(this.REG_PC + 1);
-                extraCycle = this.crossPage(operandAddr, operandAddr + this.REG_X) ? 1 : 0;
-                operandAddr = this.read16(operandAddr + this.REG_X);
+                operandAddr = this.read8(this._REG_PC + 1);
+                extraCycle = this.crossPage(operandAddr, operandAddr + this._REG_X) ? 1 : 0;
+                operandAddr = this.read16(operandAddr + this._REG_X);
                 break;
             case ADDRESSING_MODE.ZERO_PAGE_INDEXED_WITH_Y:
-                operandAddr = this.read8(this.REG_PC + 1) + this.REG_Y;
+                operandAddr = this.read8(this._REG_PC + 1) + this._REG_Y;
                 break;
             case ADDRESSING_MODE.ZERO_PAGE_INDIRECT_INDEXED_WITH_Y:
-                operandAddr = this.read16(this.read8(this.REG_PC + 1));
-                extraCycle = this.crossPage(operandAddr, operandAddr + this.REG_Y) ? 1 : 0;
-                operandAddr += this.REG_Y;
+                operandAddr = this.read16(this.read8(this._REG_PC + 1));
+                extraCycle = this.crossPage(operandAddr, operandAddr + this._REG_Y) ? 1 : 0;
+                operandAddr += this._REG_Y;
                 break;
         }
 
         this.counter++;
 
         if (this.machine.debugger.isDebuggerEnabled(this.counter)) {
-            this.machine.debugger.setBefore(this.counter, this.REG_PC, inst, this.REG_A,
-                this.REG_X,
-                this.REG_Y,
-                this.REG_S,
-                this.REG_P,
-                this.FLAG_N,
-                this.FLAG_V,
-                this.FLAG_B,
-                this.FLAG_D,
-                this.FLAG_I,
-                this.FLAG_Z,
-                this.FLAG_C);
+            this.machine.debugger.setBefore(this.counter, this._REG_PC, inst, this._REG_A,
+                this._REG_X,
+                this._REG_Y,
+                this._REG_S,
+                this._REG_P,
+                this._FLAG_N,
+                this._FLAG_V,
+                this._FLAG_B,
+                this._FLAG_D,
+                this._FLAG_I,
+                this._FLAG_Z,
+                this._FLAG_C);
         }
 
         // http://nesdev.com/6502.txt
@@ -246,74 +289,74 @@ export class CPU {
         switch (opcode) {
             case INSTRUCTIONS.ADC:
                 operand = this.read8(operandAddr);
-                temp = this.REG_A + operand + this.FLAG_C;
+                temp = this._REG_A + operand + this._FLAG_C;
 
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
-                this.FLAG_C = temp > 0xff ? 1 : 0;
-                this.FLAG_V = (((this.REG_A ^ operand) & 0x80) == 0) && (((this.REG_A ^ temp) & 0x80) != 0) ? 1 : 0;
-                this.REG_A = temp & 0xff;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
+                this._FLAG_C = temp > 0xff ? 1 : 0;
+                this._FLAG_V = (((this._REG_A ^ operand) & 0x80) == 0) && (((this._REG_A ^ temp) & 0x80) != 0) ? 1 : 0;
+                this._REG_A = temp & 0xff;
                 break;
             case INSTRUCTIONS.AND:
                 operand = this.read8(operandAddr);
-                this.REG_A = this.REG_A & operand;
+                this._REG_A = this._REG_A & operand;
 
-                this.FLAG_N = (this.REG_A >> 7) & 1;
-                this.FLAG_Z = this.REG_A == 0 ? 1 : 0;
+                this._FLAG_N = (this._REG_A >> 7) & 1;
+                this._FLAG_Z = this._REG_A == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.ASL:
-                operand = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this.REG_A : this.read8(operandAddr);
-                temp = this.REG_A << 1;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
-                this.FLAG_C = (this.REG_A & 0x80) != 0 ? 1 : 0;
-                this.REG_A = temp & 0xff;
+                operand = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this._REG_A : this.read8(operandAddr);
+                temp = this._REG_A << 1;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
+                this._FLAG_C = (this._REG_A & 0x80) != 0 ? 1 : 0;
+                this._REG_A = temp & 0xff;
                 break;
             case INSTRUCTIONS.BCC:
-                if (this.FLAG_C == 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_C == 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.BCS:
-                if (this.FLAG_C != 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_C != 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.BEQ:
-                if (this.FLAG_Z != 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_Z != 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.BIT:
                 operand = this.read8(operandAddr);
-                this.FLAG_N = (operand >> 7) & 1;
-                this.FLAG_V = (operand >> 6) & 1;
-                this.FLAG_Z = (operand & this.REG_A) == 0 ? 1 : 0;
+                this._FLAG_N = (operand >> 7) & 1;
+                this._FLAG_V = (operand >> 6) & 1;
+                this._FLAG_Z = (operand & this._REG_A) == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.BMI:
-                if (this.FLAG_N != 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_N != 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.BNE:
-                if (this.FLAG_Z == 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_Z == 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.BPL:
-                if (this.FLAG_N == 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_N == 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
@@ -321,135 +364,135 @@ export class CPU {
                 this.requestINT(IRQType.IRQ_NORMAL);
                 break;
             case INSTRUCTIONS.BVC:
-                if (this.FLAG_V == 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_V == 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.BVS:
-                if (this.FLAG_V != 0) {
-                    extraCycle = this.crossPage(this.REG_PC, operandAddr) ? 2 : 1;
-                    this.REG_PC = operandAddr;
+                if (this._FLAG_V != 0) {
+                    extraCycle = this.crossPage(this._REG_PC, operandAddr) ? 2 : 1;
+                    this._REG_PC = operandAddr;
                     oplenth = 0;
                 }
                 break;
             case INSTRUCTIONS.CLC:
-                this.FLAG_C = 0;
+                this._FLAG_C = 0;
                 break;
             case INSTRUCTIONS.CLD:
-                this.FLAG_D = 0;
+                this._FLAG_D = 0;
                 break;
             case INSTRUCTIONS.CLI:
-                this.FLAG_I = 0;
+                this._FLAG_I = 0;
                 break;
             case INSTRUCTIONS.CLV:
-                this.FLAG_V = 0;
+                this._FLAG_V = 0;
                 break;
             case INSTRUCTIONS.CMP:
                 operand = this.read8(operandAddr);
-                temp = this.REG_A - operand;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
-                this.FLAG_C = temp >= 0 ? 1 : 0;
+                temp = this._REG_A - operand;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
+                this._FLAG_C = temp >= 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.CPX:
                 operand = this.read8(operandAddr);
-                temp = this.REG_X - operand;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
-                this.FLAG_C = temp >= 0 ? 1 : 0;
+                temp = this._REG_X - operand;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
+                this._FLAG_C = temp >= 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.CPY:
                 operand = this.read8(operandAddr);
-                temp = this.REG_Y - operand;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
-                this.FLAG_C = temp >= 0 ? 1 : 0;
+                temp = this._REG_Y - operand;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
+                this._FLAG_C = temp >= 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.DEC:
                 operand = this.read8(operandAddr);
                 temp = (operand - 1) & 0xff;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
                 this.write8(operandAddr, temp);
                 break;
             case INSTRUCTIONS.DEX:
-                temp = (this.REG_X - 1) & 0xff;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
-                this.REG_X = temp & 0xff;
+                temp = (this._REG_X - 1) & 0xff;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
+                this._REG_X = temp & 0xff;
                 break;
             case INSTRUCTIONS.DEY:
-                temp = (this.REG_Y - 1) & 0xff;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
-                this.REG_Y = temp & 0xff;
+                temp = (this._REG_Y - 1) & 0xff;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
+                this._REG_Y = temp & 0xff;
                 break;
             case INSTRUCTIONS.EOR:
-                this.REG_A = (this.REG_A ^ this.read8(operandAddr)) & 0xff;
-                this.FLAG_N = (this.REG_A >> 7) & 1;
-                this.FLAG_Z = this.REG_A == 0 ? 1 : 0;
+                this._REG_A = (this._REG_A ^ this.read8(operandAddr)) & 0xff;
+                this._FLAG_N = (this._REG_A >> 7) & 1;
+                this._FLAG_Z = this._REG_A == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.INC:
                 operand = this.read8(operandAddr);
                 temp = (operand + 1) & 0xff;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
                 this.write8(operandAddr, temp);
                 break;
             case INSTRUCTIONS.INX:
-                temp = (this.REG_X + 1) & 0xff;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
-                this.REG_X = temp;
+                temp = (this._REG_X + 1) & 0xff;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
+                this._REG_X = temp;
                 break;
             case INSTRUCTIONS.INY:
-                temp = (this.REG_Y + 1) & 0xff;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
-                this.REG_Y = temp;
+                temp = (this._REG_Y + 1) & 0xff;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
+                this._REG_Y = temp;
                 break;
             case INSTRUCTIONS.JMP:
                 // this.REG_PC = this.read16(operandAddr);
                 // if (this.counter == 0x19d32) {
                 //     alert('hit!');
                 // }
-                this.REG_PC = operandAddr;
+                this._REG_PC = operandAddr;
                 oplenth = 0;
                 break;
             case INSTRUCTIONS.JSR:
-                this.push(((this.REG_PC + 2) >> 8) & 0xff);
-                this.push((this.REG_PC + 2) & 0xff);
+                this.push(((this._REG_PC + 2) >> 8) & 0xff);
+                this.push((this._REG_PC + 2) & 0xff);
                 // this.REG_PC = this.read16(operandAddr);
-                this.REG_PC = operandAddr;
+                this._REG_PC = operandAddr;
                 oplenth = 0;
                 break;
             case INSTRUCTIONS.LDA:
                 // if (this.counter == 0x8e71)
                 //     alert('LDA hit!');
-                this.REG_A = this.read8(operandAddr);
-                this.FLAG_N = (this.REG_A >> 7) & 1;
-                this.FLAG_Z = this.REG_A == 0 ? 1 : 0;
+                this._REG_A = this.read8(operandAddr);
+                this._FLAG_N = (this._REG_A >> 7) & 1;
+                this._FLAG_Z = this._REG_A == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.LDX:
-                this.REG_X = this.read8(operandAddr);
-                this.FLAG_N = (this.REG_X >> 7) & 1;
-                this.FLAG_Z = this.REG_X == 0 ? 1 : 0;
+                this._REG_X = this.read8(operandAddr);
+                this._FLAG_N = (this._REG_X >> 7) & 1;
+                this._FLAG_Z = this._REG_X == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.LDY:
-                this.REG_Y = this.read8(operandAddr);
-                this.FLAG_N = (this.REG_Y >> 7) & 1;
-                this.FLAG_Z = this.REG_Y == 0 ? 1 : 0;
+                this._REG_Y = this.read8(operandAddr);
+                this._FLAG_N = (this._REG_Y >> 7) & 1;
+                this._FLAG_Z = this._REG_Y == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.LSR:
-                temp = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this.REG_A : this.read8(operandAddr);
-                this.FLAG_N = 0;
-                this.FLAG_C = temp & 1;
+                temp = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this._REG_A : this.read8(operandAddr);
+                this._FLAG_N = 0;
+                this._FLAG_C = temp & 1;
                 temp = temp >> 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
                 if (addrMode == ADDRESSING_MODE.ACCUMULATOR) {
-                    this.REG_A = temp;
+                    this._REG_A = temp;
                 } else {
                     this.write8(operandAddr, temp);
                 }
@@ -458,114 +501,114 @@ export class CPU {
                 break;
             case INSTRUCTIONS.ORA:
                 operand = this.read8(operandAddr);
-                temp = operand | this.REG_A;
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
-                this.REG_A = temp;
+                temp = operand | this._REG_A;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
+                this._REG_A = temp;
                 break;
             case INSTRUCTIONS.PHA:
-                this.push(this.REG_A);
+                this.push(this._REG_A);
                 break;
             case INSTRUCTIONS.PHP:
                 this.push(this.readPS());
                 break;
             case INSTRUCTIONS.PLA:
-                this.REG_A = this.pop();
-                this.FLAG_N = (this.REG_A >> 7) & 1;
-                this.FLAG_Z = this.REG_A == 0 ? 1 : 0;
+                this._REG_A = this.pop();
+                this._FLAG_N = (this._REG_A >> 7) & 1;
+                this._FLAG_Z = this._REG_A == 0 ? 1 : 0;
                 break;
             case INSTRUCTIONS.PLP:
                 this.setPS(this.pop());
                 break;
             case INSTRUCTIONS.ROL:
-                operand = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this.REG_A : this.read8(operandAddr);
-                temp = ((operand << 1) & 0xff) | this.FLAG_C;
+                operand = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this._REG_A : this.read8(operandAddr);
+                temp = ((operand << 1) & 0xff) | this._FLAG_C;
 
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_C = (operand >> 7) & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_C = (operand >> 7) & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
 
                 if (addrMode == ADDRESSING_MODE.ACCUMULATOR) {
-                    this.REG_A = temp;
+                    this._REG_A = temp;
                 } else {
                     this.write8(operandAddr, temp);
                 }
                 break;
             case INSTRUCTIONS.ROR:
-                operand = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this.REG_A : this.read8(operandAddr);
-                temp = (operand >> 1) | (this.FLAG_C << 7);
+                operand = addrMode == ADDRESSING_MODE.ACCUMULATOR ? this._REG_A : this.read8(operandAddr);
+                temp = (operand >> 1) | (this._FLAG_C << 7);
 
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_C = operand & 1;
-                this.FLAG_Z = temp == 0 ? 1 : 0;
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_C = operand & 1;
+                this._FLAG_Z = temp == 0 ? 1 : 0;
 
                 if (addrMode == ADDRESSING_MODE.ACCUMULATOR) {
-                    this.REG_A = temp;
+                    this._REG_A = temp;
                 } else {
                     this.write8(operandAddr, temp);
                 }
                 break;
             case INSTRUCTIONS.RTI:
                 this.setPS(this.pop());
-                this.REG_PC = this.pop();
-                this.REG_PC = this.REG_PC + (this.pop() << 8);
+                this._REG_PC = this.pop();
+                this._REG_PC = this._REG_PC + (this.pop() << 8);
                 oplenth = 0;
                 break;
             case INSTRUCTIONS.RTS:
-                this.REG_PC = this.pop();
-                this.REG_PC = this.REG_PC + (this.pop() << 8);
-                this.REG_PC++;
+                this._REG_PC = this.pop();
+                this._REG_PC = this._REG_PC + (this.pop() << 8);
+                this._REG_PC++;
                 oplenth = 0;
                 break;
             case INSTRUCTIONS.SBC:
                 operand = this.read8(operandAddr);
-                temp = this.REG_A - operand - (1 - this.FLAG_C);
-                this.FLAG_N = (temp >> 7) & 1;
-                this.FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
-                this.FLAG_C = temp < 0 ? 0 : 1;
-                this.FLAG_V = ((((this.REG_A & 0x80) ^ (operand & 0x80)) == 0) && ((this.REG_A & 0x80) != (temp & 0x80))) ? 1 : 0;
+                temp = this._REG_A - operand - (1 - this._FLAG_C);
+                this._FLAG_N = (temp >> 7) & 1;
+                this._FLAG_Z = (temp & 0xff) == 0 ? 1 : 0;
+                this._FLAG_C = temp < 0 ? 0 : 1;
+                this._FLAG_V = ((((this._REG_A & 0x80) ^ (operand & 0x80)) == 0) && ((this._REG_A & 0x80) != (temp & 0x80))) ? 1 : 0;
 
-                this.REG_A = temp & 0xff;
+                this._REG_A = temp & 0xff;
                 break;
             case INSTRUCTIONS.SEC:
-                this.FLAG_C = 1;
+                this._FLAG_C = 1;
                 break;
             case INSTRUCTIONS.SED:
-                this.FLAG_D = 1;
+                this._FLAG_D = 1;
                 break;
             case INSTRUCTIONS.SEI:
-                this.FLAG_I = 1;
+                this._FLAG_I = 1;
                 break;
             case INSTRUCTIONS.STA:
-                this.write8(operandAddr, this.REG_A);
+                this.write8(operandAddr, this._REG_A);
                 // this.REG_A = this.read8(operandAddr);
                 // this.REG_A = operand;
                 break;
             case INSTRUCTIONS.STX:
-                this.write8(operandAddr, this.REG_X);
+                this.write8(operandAddr, this._REG_X);
                 // this.REG_X = this.read8(operandAddr);
                 break;
             case INSTRUCTIONS.STY:
-                this.write8(operandAddr, this.REG_Y);
+                this.write8(operandAddr, this._REG_Y);
                 // this.REG_Y = this.read8(operandAddr);
                 break;
             case INSTRUCTIONS.TAX:
-                this.REG_X = this.REG_A;
+                this._REG_X = this._REG_A;
                 break;
             case INSTRUCTIONS.TAY:
-                this.REG_Y = this.REG_A;
+                this._REG_Y = this._REG_A;
                 break;
             case INSTRUCTIONS.TSX:
-                this.REG_X = this.REG_S;
+                this._REG_X = this._REG_S;
                 break;
             case INSTRUCTIONS.TXA:
-                this.REG_A = this.REG_X;
+                this._REG_A = this._REG_X;
                 break;
             case INSTRUCTIONS.TXS:
-                this.REG_S = this.REG_X;
+                this._REG_S = this._REG_X;
                 break;
             case INSTRUCTIONS.TYA:
-                this.REG_A = this.REG_Y;
+                this._REG_A = this._REG_Y;
                 break;
             default:
                 alert('error! instruction not existed!');
@@ -574,21 +617,21 @@ export class CPU {
                 }
                 return -1;
         }
-        this.REG_PC += oplenth;
+        this._REG_PC += oplenth;
         const totalCycles = opcycles + extraCycle;
         if (this.machine.debugger.isDebuggerEnabled(this.counter)) {
-            this.machine.debugger.setAfter(this.counter, this.REG_PC, inst, this.REG_A,
-                this.REG_X,
-                this.REG_Y,
-                this.REG_S,
-                this.REG_P,
-                this.FLAG_N,
-                this.FLAG_V,
-                this.FLAG_B,
-                this.FLAG_D,
-                this.FLAG_I,
-                this.FLAG_Z,
-                this.FLAG_C,
+            this.machine.debugger.setAfter(this.counter, this._REG_PC, inst, this._REG_A,
+                this._REG_X,
+                this._REG_Y,
+                this._REG_S,
+                this._REG_P,
+                this._FLAG_N,
+                this._FLAG_V,
+                this._FLAG_B,
+                this._FLAG_D,
+                this._FLAG_I,
+                this._FLAG_Z,
+                this._FLAG_C,
                 totalCycles);
         }
         return totalCycles;
@@ -597,12 +640,12 @@ export class CPU {
 
     public reset(): void {
         this.setPS(0);
-        this.REG_A = 0;
-        this.REG_P = 0;
-        this.REG_PC = 0x8000;
-        this.REG_S = 0x100;
-        this.REG_X = 0;
-        this.REG_Y = 0;
+        this._REG_A = 0;
+        this._REG_P = 0;
+        this._REG_PC = 0x8000;
+        this._REG_S = 0x100;
+        this._REG_X = 0;
+        this._REG_Y = 0;
         // this.RAM = new Array(0x800);
         this.haltCycles = 0;
         for (let i = 0; i < 0x10000; i++) {
@@ -632,31 +675,31 @@ export class CPU {
 
     // http://emulation.wikia.com/wiki/NES_CPU
     private handleIRQ_NORMAL(): void {
-        this.push((this.REG_PC >> 8) & 0xff);
-        this.push(this.REG_PC & 0xff);
+        this.push((this._REG_PC >> 8) & 0xff);
+        this.push(this._REG_PC & 0xff);
         this.push(this.readPS());
-        this.REG_PC = this.read16(0xfffe);
-        this.FLAG_I = 1;
+        this._REG_PC = this.read16(0xfffe);
+        this._FLAG_I = 1;
     }
 
     private handleNMI(): void {
         if ((this.machine.mmap.load(0x2000) & 128) != 0) {
-            this.push((this.REG_PC >> 8) & 0xff);
-            this.push(this.REG_PC & 0xff);
+            this.push((this._REG_PC >> 8) & 0xff);
+            this.push(this._REG_PC & 0xff);
             this.push(this.readPS());
-            this.REG_PC = this.read16(0xfffa);
+            this._REG_PC = this.read16(0xfffa);
         }
     }
 
     private handleReset(): void {
-        this.REG_S = (this.REG_S - 3 + 0x100) & 0xff;
-        this.FLAG_I = 1;
-        this.REG_PC = this.read16(0xfffc);
+        this._REG_S = (this._REG_S - 3 + 0x100) & 0xff;
+        this._FLAG_I = 1;
+        this._REG_PC = this.read16(0xfffc);
     }
 
     private push(val: number): void {
-        this.mem[this.REG_S + 0x100] = (val & 0xff);
-        this.REG_S = this.REG_S == 0 ? 0xff : this.REG_S - 1;
+        this.mem[this._REG_S + 0x100] = (val & 0xff);
+        this._REG_S = this._REG_S == 0 ? 0xff : this._REG_S - 1;
     }
 
     public requestINT(type: IRQType): void {
@@ -670,9 +713,9 @@ export class CPU {
     }
 
     private pop(): number {
-        this.REG_S++;
-        this.REG_S = (this.REG_S & 0xFF);
-        return this.mem[this.REG_S + 0x100];
+        this._REG_S++;
+        this._REG_S = (this._REG_S & 0xFF);
+        return this.mem[this._REG_S + 0x100];
     }
     private read8(addr: number): number {
         if (addr < 0x2000) {
@@ -699,23 +742,23 @@ export class CPU {
     }
 
     private setPS(status: number) {
-        this.FLAG_C = status & 1;
-        this.FLAG_Z = (status >> 1) & 1;
-        this.FLAG_I = (status >> 2) & 1;
-        this.FLAG_D = (status >> 3) & 1;
-        this.FLAG_B = (status >> 5) & 1;
-        this.FLAG_V = (status >> 6) & 1;
-        this.FLAG_N = (status >> 7) & 1;
+        this._FLAG_C = status & 1;
+        this._FLAG_Z = (status >> 1) & 1;
+        this._FLAG_I = (status >> 2) & 1;
+        this._FLAG_D = (status >> 3) & 1;
+        this._FLAG_B = (status >> 5) & 1;
+        this._FLAG_V = (status >> 6) & 1;
+        this._FLAG_N = (status >> 7) & 1;
     }
 
     private readPS(): number {
-        return this.FLAG_C
-            | (this.FLAG_Z << 1)
-            | (this.FLAG_I << 2)
-            | (this.FLAG_D << 3)
-            | (this.FLAG_B << 5)
-            | (this.FLAG_V << 6)
-            | (this.FLAG_N << 7);
+        return this._FLAG_C
+            | (this._FLAG_Z << 1)
+            | (this._FLAG_I << 2)
+            | (this._FLAG_D << 3)
+            | (this._FLAG_B << 5)
+            | (this._FLAG_V << 6)
+            | (this._FLAG_N << 7);
     }
 
     private static calcInstructionData(): Array<number> {
