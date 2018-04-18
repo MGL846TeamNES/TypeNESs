@@ -222,7 +222,7 @@ class AttrTable {
     }
 }
 
-class Palette {
+export class Palette {
     public RGBColors: number[];
     constructor() {
         this.RGBColors = new Array(16);
