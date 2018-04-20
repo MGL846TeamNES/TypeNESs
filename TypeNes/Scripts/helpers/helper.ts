@@ -62,3 +62,23 @@ export const loadMarioROM = (m: Machine) => {
     }
     m.loadRom(dataArr);
 };
+
+export const getBase64Image = (url) => {
+  var img = new Image();
+
+  img.setAttribute('crossOrigin', 'anonymous');
+
+  img.src = url;
+
+  var canvas = document.createElement("canvas");
+  canvas.width =img.width;
+  canvas.height =img.height;
+
+  var ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+
+  var dataURL = canvas.toDataURL("image/png");
+
+  alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
+  return dataURL
+}
