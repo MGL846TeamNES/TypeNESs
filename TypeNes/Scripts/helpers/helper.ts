@@ -63,6 +63,20 @@ export const loadMarioROM = (m: Machine) => {
     m.loadRom(dataArr);
 };
 
+/**
+ * Load not valid ROM functionality for mocking to read Mario Bros.
+ */
+export const loadMarioTxtROM = (m: Machine) => {
+    const nb = fs.readFileSync('TypeNes/ROM/mario.txt');
+    const arrayBuffer = nb.buffer;
+    const byteArray = new Uint8Array(arrayBuffer);
+    const dataArr = new Array();
+    for (let i = 0; i < byteArray.byteLength; i++) {
+        dataArr[i] = byteArray[i];
+    }
+    m.loadRom(dataArr);
+};
+
 export const getBase64Image = (url) => {
   var img = new Image();
 
