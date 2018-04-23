@@ -62,6 +62,10 @@ export class UI {
         this.status.textContent = s;
     }
 
+    public getStatus(): string {
+        return this.status.textContent;
+    }
+
     public writeFrame(buffer: number[], prevBuffer: number[]) {
         const imageData = this.canvasImageData.data;
         let pixel, i, j;
